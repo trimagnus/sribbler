@@ -1,4 +1,4 @@
-const INITIAL_SIDE_LENGTH = 16;
+const INITIAL_SIDE_LENGTH = 4;
 
 const drawToPixel = (e) => {
     //Change to a variable color later
@@ -16,7 +16,7 @@ const drawPixels = (sides = INITIAL_SIDE_LENGTH) => {
     const container = document.querySelector('.container');
     container.innerHTML = '';
 
-    const HEIGHT = window.innerHeight;
+    const HEIGHT = Math.min(window.innerHeight, window.innerWidth);
     const PIXEL_WIDTH = Math.floor(HEIGHT / sides / 1.5);
 
     //create sides x sides divs with class .pixel
@@ -28,7 +28,9 @@ const drawPixels = (sides = INITIAL_SIDE_LENGTH) => {
             pixel.classList.add('pixel');
             pixel.style.width = `${PIXEL_WIDTH}px`;
             pixel.style.height = `${PIXEL_WIDTH}px`;
+
             pixel.addEventListener('mouseenter', drawToPixel);
+
             row.appendChild(pixel);
         }
         container.appendChild(row);
@@ -49,10 +51,29 @@ const resizeGrid = () => {
     drawPixels(answer);
 };
 
+const handleTouch = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.touches.length !== 1) return;
+    const touch = e.touches[0];
+
+    const element = document.elementFromPoint(touch.pageX, touch.pageY);
+    if(!element.classList.contains('pixel')) return;
+
+    element.classList.add('colored-pixel');
+};
+
+const handleTouchMove = (e) => {
+    handleTouch(e);
+};
+
 const clearButton = document.getElementById('clear-button');
 const resizeButton = document.getElementById('new-grid');
 
 clearButton.addEventListener('click', clearGrid);
 resizeButton.addEventListener('click', resizeGrid);
+
+document.body.addEventListener('touchstart', handleTouch);
+document.body.addEventListener('touchmove', handleTouchMove)
 
 drawPixels();
