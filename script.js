@@ -1,4 +1,4 @@
-const INITIAL_SIDE_LENGTH = 4;
+const INITIAL_SIDE_LENGTH = 16;
 
 const drawToPixel = (e) => {
     //Change to a variable color later
